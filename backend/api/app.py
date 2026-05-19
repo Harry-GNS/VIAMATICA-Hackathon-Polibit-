@@ -63,4 +63,7 @@ def create_app():
     def not_found(error):
         return jsonify({"error": "Ruta no encontrada"}), 404
     
+    from flask_cors import CORS
+    CORS(app)
+    
     return app
