@@ -78,7 +78,7 @@ copy .env.example .env
 ## 🎮 Uso
 
 ```bash
-python src/main.py
+python main.py
 ```
 ## 👨‍💻 Autor
 
@@ -86,4 +86,4 @@ Polibit
 
 ## 📝 Licencia
 
-Viamatica Hackathon 2024
+Viamatica Hackathon 2026
