@@ -13,7 +13,7 @@
         <header class="navbar">
             <div class="navbar-content">
                         <div class="navbar-left">
-                            <button id="hamburgerBtn" class="btn-icon" aria-label="Abrir menú">
+                            <button id="hamburgerBtn" class="btn-icon" aria-label="Abrir menú" onclick="toggleSidebar()">
                                 <i class="fas fa-bars"></i>
                             </button>
                             <div class="logo">
@@ -234,6 +234,31 @@
                 </div>
             </aside>
         </main>
+            <script>
+                function toggleSidebar() {
+                    const body = document.body;
+                    const overlay = document.getElementById('sidebarOverlay');
+                    const hamburger = document.getElementById('hamburgerBtn');
+                    const isCollapsed = body.classList.toggle('sidebar-collapsed');
+                    if (window.innerWidth <= 992) {
+                        if (isCollapsed) {
+                            body.classList.remove('sidebar-open');
+                            if (overlay) overlay.setAttribute('aria-hidden', 'true');
+                        } else {
+                            body.classList.add('sidebar-open');
+                            if (overlay) overlay.setAttribute('aria-hidden', 'false');
+                        }
+                    } else {
+                        body.classList.remove('sidebar-open');
+                        if (overlay) overlay.setAttribute('aria-hidden', 'true');
+                    }
+                    if (hamburger && hamburger.querySelector('i')) {
+                        const icon = hamburger.querySelector('i');
+                        icon.classList.toggle('fa-times', !isCollapsed);
+                        icon.classList.toggle('fa-bars', isCollapsed);
+                    }
+                }
+            </script>
     </div>
 
 

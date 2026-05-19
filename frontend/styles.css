@@ -812,6 +812,19 @@ body {
     opacity: 0;
     pointer-events: none;
 }
+/* When collapsed, remove its flex-basis so center expands */
+.sidebar-collapsed .sidebar-left {
+    flex: 0 0 0 !important;
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+/* Allow main content to take full width when collapsed */
+.sidebar-collapsed .main-content {
+    gap: var(--spacing);
+}
 
 .sidebar-overlay {
     position: fixed;

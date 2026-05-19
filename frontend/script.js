@@ -44,15 +44,47 @@ class ViamaticaChat {
         // Hamburger menu
         if (this.hamburgerBtn) {
             this.hamburgerBtn.addEventListener('click', () => {
-                document.documentElement.classList.toggle('sidebar-collapsed');
-                document.documentElement.classList.toggle('sidebar-open');
+                const body = document.body;
+                const overlay = this.sidebarOverlay;
+                const isCollapsed = body.classList.toggle('sidebar-collapsed');
+
+                // On small screens, when opening remove collapsed and show overlay
+                if (window.innerWidth <= 992) {
+                    if (isCollapsed) {
+                        // we just collapsed -> ensure overlay hidden
+                        body.classList.remove('sidebar-open');
+                        if (overlay) overlay.setAttribute('aria-hidden', 'true');
+                    } else {
+                        // we just opened
+                        body.classList.add('sidebar-open');
+                        if (overlay) overlay.setAttribute('aria-hidden', 'false');
+                    }
+                } else {
+                    // On larger screens, ensure sidebar-open is not left set
+                    body.classList.remove('sidebar-open');
+                    if (overlay) overlay.setAttribute('aria-hidden', 'true');
+                }
+
+                // Update icon to X when expanded (not collapsed)
+                const icon = this.hamburgerBtn.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fa-times', !isCollapsed);
+                    icon.classList.toggle('fa-bars', isCollapsed);
+                }
             });
         }
 
         if (this.sidebarOverlay) {
             this.sidebarOverlay.addEventListener('click', () => {
-                document.documentElement.classList.remove('sidebar-open');
-                document.documentElement.classList.add('sidebar-collapsed');
+                const body = document.body;
+                body.classList.remove('sidebar-open');
+                body.classList.add('sidebar-collapsed');
+                this.sidebarOverlay.setAttribute('aria-hidden', 'true');
+                const icon = this.hamburgerBtn && this.hamburgerBtn.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
             });
         }
     }
