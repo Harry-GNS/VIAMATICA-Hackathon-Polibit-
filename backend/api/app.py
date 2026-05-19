@@ -4,18 +4,29 @@ Define los endpoints de la API conversacional
 """
 
 import os
-from flask import Flask, request, jsonify, send_from_directory, render_template_string
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from backend.agent.copago_agent import CopagoAgent
 import traceback
+from datetime import datetime, timedelta
 
 def create_app():
     """Factory pattern para crear la aplicación Flask"""
-    # Definir rutas para frontend
-    frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'frontend')
+    # Definir ruta para frontend
+    root_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    frontend_path = os.path.join(root_path, 'frontend')
     
-    app = Flask(__name__, static_folder=frontend_path, static_url_path='')
+    # Crear app con static_folder y static_url_path correctos
+    app = Flask(__name__)
     CORS(app)  # Habilitar CORS para frontend
+    
+    # Deshabilitar caché
+    @app.after_request
+    def set_response_headers(response):
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
     
     # Inicializar agente
     agent = CopagoAgent()
@@ -24,12 +35,17 @@ def create_app():
     @app.route('/', methods=['GET'])
     def index():
         """Servir frontend principal"""
-        return send_from_directory(frontend_path, 'index.html')
+        return send_from_directory(frontend_path, 'index.html', mimetype='text/html')
     
-    @app.route('/<path:filename>', methods=['GET'])
-    def serve_static(filename):
-        """Servir archivos estáticos (CSS, JS, etc)"""
-        return send_from_directory(frontend_path, filename)
+    @app.route('/styles.css', methods=['GET'])
+    def serve_css():
+        """Servir archivo CSS"""
+        return send_from_directory(frontend_path, 'styles.css', mimetype='text/css')
+    
+    @app.route('/script.js', methods=['GET'])
+    def serve_js():
+        """Servir archivo JavaScript"""
+        return send_from_directory(frontend_path, 'script.js', mimetype='application/javascript')
     
     @app.route('/health', methods=['GET'])
     def health():
