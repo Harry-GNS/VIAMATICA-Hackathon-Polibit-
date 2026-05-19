@@ -1,0 +1,22 @@
+# Entorno virtual
+venv/
+env/
+*.pyc
+__pycache__/
+
+# Variables de entorno
+.env
+.env.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (si usas frontend con npm)
+node_modules/
+package-lock.json

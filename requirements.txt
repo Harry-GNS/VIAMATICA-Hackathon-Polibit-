@@ -1,0 +1,17 @@
+# API & Web Framework
+flask==3.0.0
+flask-cors==4.0.0
+python-dotenv==1.0.0
+
+# IA & LLM
+anthropic==0.7.0
+
+# Notion (opcional)
+notion-client==2.2.1
+
+# Utilidades
+requests==2.31.0
+pydantic==2.5.0
+
+# Producción (solo si haces deploy)
+gunicorn==21.2.0
