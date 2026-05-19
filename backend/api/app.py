@@ -61,18 +61,31 @@ def create_app():
         try:
             data = request.json
             user_message = data.get('message', '')
-            
+
             if not user_message:
                 return jsonify({"error": "Mensaje vacío"}), 400
-            
+
             # Obtener respuesta del agente
-            response = agent.process_message(user_message)
-            
+            try:
+                response = agent.process_message(user_message)
+            except Exception as e:
+                # Registrar y devolver una respuesta legible al frontend
+                print(f"Error en /api/chat: {str(e)}")
+                traceback.print_exc()
+                fallback = (
+                    "Lo siento, el servicio de LLM no está disponible en este momento. "
+                    "Detalles: " + str(e)
+                )
+                return jsonify({
+                    "status": "success",
+                    "message": fallback
+                }), 200
+
             return jsonify({
                 "status": "success",
                 "message": response
             }), 200
-            
+
         except Exception as e:
             print(f"Error en /api/chat: {str(e)}")
             traceback.print_exc()

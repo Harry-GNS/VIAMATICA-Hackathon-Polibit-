@@ -48,15 +48,27 @@ class CopagoAgent:
         context = self._build_context()
         
         # Llamar a Groq API
-        response = self.client.chat.completions.create(
-            model="mixtral-8x7b-32768",  # Modelo rápido y gratuito de Groq
-            max_tokens=1000,
-            system=get_system_prompt(context),
-            messages=self.conversation_history
-        )
-        
-        # Extraer respuesta
-        assistant_message = response.choices[0].message.content
+        # Groq client expects the system prompt included in the messages list
+        messages = [
+            {"role": "system", "content": get_system_prompt(context)}
+        ] + self.conversation_history
+
+        try:
+            response = self.client.chat.completions.create(
+                model="mixtral-8x7b-32768",
+                max_tokens=1000,
+                messages=messages
+            )
+
+            # Extraer respuesta
+            assistant_message = response.choices[0].message.content
+        except Exception as e:
+            # Mostrar error en consola y devolver mensaje legible al cliente
+            print("Error en /api/chat:", e)
+            assistant_message = (
+                "Lo siento, el servicio de LLM no está disponible en este momento. "
+                "Error: " + str(e)
+            )
         
         # Agregar al historial
         self.conversation_history.append({
