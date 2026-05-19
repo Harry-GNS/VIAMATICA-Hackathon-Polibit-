@@ -1,31 +1,30 @@
 """
 backend/agent/copago_agent.py - Agente conversacional principal
 Lógica del agente que interpreta síntomas, sugiere especialidades y calcula copagos
+Usa Groq API para LLM y SQLite para base de datos
 """
 
 import os
-from anthropic import Anthropic
-from backend.agent.prompts import get_system_prompt
-from backend.integrations.notion_client import NotionClient
-from backend.integrations.hospital_data import HospitalDataManager
+from groq import Groq
+from backend.models.prompts import get_system_prompt
+from backend.database.db_manager import DatabaseManager
 
 class CopagoAgent:
     """Agente conversacional para estimación de copago y cobertura"""
     
     def __init__(self):
         """Inicializar el agente con API key y datos"""
-        self.api_key = os.getenv('ANTHROPIC_API_KEY')
+        self.api_key = os.getenv('GROQ_API_KEY')
         if not self.api_key:
-            raise ValueError("❌ ANTHROPIC_API_KEY no configurado en .env")
+            raise ValueError("❌ GROQ_API_KEY no configurado en .env")
         
-        self.client = Anthropic()
+        self.client = Groq(api_key=self.api_key)
         self.conversation_history = []
         
-        # Inicializar datos
-        self.notion_client = NotionClient()
-        self.hospital_manager = HospitalDataManager()
+        # Inicializar base de datos
+        self.db = DatabaseManager()
         
-        print("✅ Agente inicializado correctamente")
+        print("✅ Agente inicializado correctamente con Groq + SQLite")
     
     def process_message(self, user_message: str) -> str:
         """
@@ -46,16 +45,16 @@ class CopagoAgent:
         # Contexto con datos de hospitales y planes
         context = self._build_context()
         
-        # Llamar a Claude
-        response = self.client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+        # Llamar a Groq API
+        response = self.client.chat.completions.create(
+            model="mixtral-8x7b-32768",  # Modelo rápido y gratuito de Groq
             max_tokens=1000,
             system=get_system_prompt(context),
             messages=self.conversation_history
         )
         
         # Extraer respuesta
-        assistant_message = response.content[0].text
+        assistant_message = response.choices[0].message.content
         
         # Agregar al historial
         self.conversation_history.append({
@@ -66,11 +65,11 @@ class CopagoAgent:
         return assistant_message
     
     def _build_context(self) -> dict:
-        """Construir contexto con datos de hospitales y planes de seguro"""
+        """Construir contexto con datos de hospitales y planes de seguro desde SQLite"""
         return {
-            "hospitales": self.hospital_manager.get_hospitals(),
-            "planes": self.notion_client.get_insurance_plans(),
-            "especialidades": self.hospital_manager.get_specialties()
+            "hospitales": self.db.get_hospitales(),
+            "planes": self.db.get_planes_seguro(),
+            "especialidades": self.db.get_especialidades()
         }
     
     def reset_conversation(self):

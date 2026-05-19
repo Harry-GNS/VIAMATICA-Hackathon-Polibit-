@@ -6,11 +6,21 @@ Inicia el servidor Flask y el agente conversacional
 import os
 from dotenv import load_dotenv
 from backend.api.app import create_app
+from backend.database.db_manager import DatabaseManager
 
 # Cargar variables de entorno
 load_dotenv()
 
 if __name__ == '__main__':
+    # Inicializar base de datos si está vacía
+    db_path = os.getenv('DATABASE_PATH', 'data/viamatica.db')
+    db = DatabaseManager(db_path)
+    
+    # Si no hay datos, cargar datos de ejemplo
+    if not db.get_hospitales():
+        print("📥 Cargando datos de ejemplo iniciales...")
+        db.load_sample_data()
+    
     # Crear aplicación Flask
     app = create_app()
     
