@@ -5,8 +5,10 @@ Usa Groq API para LLM y SQLite para base de datos
 """
 
 import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from groq import Groq
-from backend.models.prompts import get_system_prompt
+from models.prompts import get_system_prompt
 from backend.database.db_manager import DatabaseManager
 
 class CopagoAgent:

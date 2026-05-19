@@ -5,7 +5,7 @@ Define el comportamiento del agente conversacional
 
 def get_system_prompt(context: dict) -> str:
     """
-    Generar el prompt del sistema para Claude
+    Generar el prompt del sistema para el agente
     
     Args:
         context: Diccionario con datos de hospitales, planes y especialidades
@@ -18,8 +18,7 @@ def get_system_prompt(context: dict) -> str:
     planes_str = _format_plans(context.get('planes', []))
     especialidades_str = _format_specialties(context.get('especialidades', []))
     
-    system_prompt = f"""
-Eres un asistente de salud experto en seguros médicos y cálculo de copagos.
+    system_prompt = f"""Eres un asistente de salud experto en seguros médicos y cálculo de copagos.
 
 Tu función es ayudar a los pacientes a:
 1. Entender su cobertura de seguro
@@ -42,6 +41,36 @@ Tu función es ayudar a los pacientes a:
 - Proporciona cálculos detallados de copagos
 - Sugiere la opción más económica cuando sea posible
 - Nunca hagas diagnósticos médicos, solo sugiere especialidades
+- Sé conciso y directo en tus respuestas
+"""
+    return system_prompt
 
-## FORMATO DE RESPUESTA:
-## Cuando tengas suficiente información, estructúra así
+def _format_hospitals(hospitales: list) -> str:
+    """Formatear lista de hospitales"""
+    if not hospitales:
+        return "No hay hospitales disponibles en la base de datos."
+    
+    result = ""
+    for h in hospitales:
+        result += f"- {h.get('nombre', 'N/A')}: {h.get('ubicacion', 'N/A')} (Tel: {h.get('telefono', 'N/A')})\n"
+    return result
+
+def _format_plans(planes: list) -> str:
+    """Formatear lista de planes de seguro"""
+    if not planes:
+        return "No hay planes disponibles en la base de datos."
+    
+    result = ""
+    for p in planes:
+        result += f"- {p.get('nombre', 'N/A')}: Cobertura {p.get('cobertura', 'N/A')}% - Copago: ${p.get('copago', 'N/A')}\n"
+    return result
+
+def _format_specialties(especialidades: list) -> str:
+    """Formatear lista de especialidades"""
+    if not especialidades:
+        return "No hay especialidades disponibles en la base de datos."
+    
+    result = ""
+    for e in especialidades:
+        result += f"- {e.get('nombre', 'N/A')}: Copago ${e.get('copago', 'N/A')}\n"
+    return result

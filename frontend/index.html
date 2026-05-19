@@ -3,8 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estimador de Copago - Healthcare AI</title>
-    <style>
+    <title>VIAMATICA - Asesor Médico Inteligente</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navegación Superior -->
+        <header class="navbar">
+            <div class="navbar-content">
+                <div class="navbar-left">
+                    <div class="logo">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>VIAMATICA</span>
+                    </div>
+                </div>
+                
+                <div class="navbar-center">
+                    <h2>Tu Asesor de Cobertura Médica</h2>
+                </div>
+                
+                <div class="navbar-right">
+                    <button class="btn-icon" title="Notificaciones">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="btn-icon" title="Perfil">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido Principal -->
+        <main class="main-content">
+            <!-- Panel Lateral Izquierdo -->
+            <aside class="sidebar-left">
+                <div class="sidebar-section">
+                    <h3>Tu Información</h3>
+                    <div class="info-card">
+                        <div class="info-item">
+                            <label>Plan</label>
+                            <p class="info-value">Plan Gold Plus</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Cobertura</label>
+                            <p class="info-value">92%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Historial Rápido</h3>
+                    <div class="history-list">
+                        <button class="history-item">
+                            <i class="fas fa-tooth"></i>
+                            <span>Odontología</span>
+                            <small>Hoy</small>
+                        </button>
+                        <button class="history-item">
+                            <i class="fas fa-eye"></i>
+                            <span>Oftalmología</span>
+                            <small>Ayer</small>
+                        </button>
+                        <button class="history-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Cardiología</span>
+                            <small>Hace 2 días</small>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Acciones Rápidas</h3>
+                    <button class="quick-action">
+                        <i class="fas fa-download"></i>
+                        Descargar Carnet
+                    </button>
+                    <button class="quick-action">
+                        <i class="fas fa-hospital"></i>
+                        Ver Hospitales
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Área Central de Chat -->
+            <section class="chat-container">
+                <!-- Zona de Bienvenida / Estado -->
+                <div class="chat-welcome">
+                    <div class="welcome-content">
+                        <h1>¡Hola! Soy tu Asesor Médico</h1>
+                        <p>Cuéntame tus síntomas y te ayudaré a entender tu cobertura médica</p>
+                        
+                        <div class="quick-questions">
+                            <p>Preguntas comunes:</p>
+                            <button class="quick-btn">
+                                <span>¿Cuánto cuesta una consulta general?</span>
+                            </button>
+                            <button class="quick-btn">
+                                <span>¿A qué especialista debo ir?</span>
+                            </button>
+                            <button class="quick-btn">
+                                <span>¿Qué hospitales están en mi red?</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensajes Chat -->
+                <div class="messages-container">
+                    <div class="message bot-message">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <p>¡Bienvenido! Soy VIAMATICA, tu asistente de cobertura médica.</p>
+                            <small>hace 2 minutos</small>
+                        </div>
+                    </div>
+
+                    <div class="message user-message">
+                        <div class="message-content">
+                            <p>Tengo dolor de cabeza intenso</p>
+                            <small>hace 1 minuto</small>
+                        </div>
+                    </div>
+
+                    <div class="message bot-message">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="bot-response">
+                                <p><strong>Análisis:</strong> Basado en tus síntomas, te recomiendo una consulta con <strong>Medicina General</strong> o <strong>Neurología</strong>.</p>
+                                
+                                <div class="response-card">
+                                    <h4>Especialidad Recomendada</h4>
+                                    <p class="specialty">Medicina General</p>
+                                    <div class="cost-info">
+                                        <span class="copago">Copago estimado: <strong>$35</strong></span>
+                                        <span class="coverage">Cobertura: <strong>92%</strong></span>
+                                    </div>
+                                </div>
+
+                                <div class="response-card">
+                                    <h4>Hospitales Disponibles</h4>
+                                    <div class="hospital-list">
+                                        <div class="hospital-item">
+                                            <p><strong>Hospital Central</strong></p>
+                                            <small>A 2.5 km • Disponibilidad: Hoy</small>
+                                        </div>
+                                        <div class="hospital-item">
+                                            <p><strong>Clínica Premium</strong></p>
+                                            <small>A 5.1 km • Disponibilidad: Mañana</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <small>hace 30 segundos</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input de Chat -->
+                <div class="chat-input-area">
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            class="chat-input" 
+                            placeholder="Describe tus síntomas o haz una pregunta..."
+                            autocomplete="off"
+                        >
+                        <button class="btn-send" title="Enviar">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <small class="input-hint">Tip: Sé específico con tus síntomas para mejores recomendaciones</small>
+                </div>
+            </section>
+
+            <!-- Panel Lateral Derecho -->
+            <aside class="sidebar-right">
+                <div class="sidebar-section">
+                    <h3>Resumen Actual</h3>
+                    <div class="summary-card">
+                        <div class="summary-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Especialidad</span>
+                            <p>Medicina General</p>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-receipt"></i>
+                            <span>Copago Est.</span>
+                            <p>$35</p>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-percentage"></i>
+                            <span>Cobertura</span>
+                            <p>92%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Datos del Plan</h3>
+                    <div class="plan-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Aseguradora:</span>
+                            <span class="detail-value">SeguroPlus</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Vigencia:</span>
+                            <span class="detail-value">12 meses</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Deducible:</span>
+                            <span class="detail-value">$500</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Copago Max:</span>
+                            <span class="detail-value">$5000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Consejos Útiles</h3>
+                    <div class="tips-list">
+                        <div class="tip-item">
+                            <i class="fas fa-lightbulb"></i>
+                            <p>Solicita autorizaciones previas para cirugías mayores</p>
+                        </div>
+                        <div class="tip-item">
+                            <i class="fas fa-lightbulb"></i>
+                            <p>Usa medicamentos genéricos para reducir costos</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
         * {
             margin: 0;
             padding: 0;
