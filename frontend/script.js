@@ -9,15 +9,18 @@ class ViamaticaChat {
         this.btnSend = document.querySelector('.btn-send');
         this.messagesContainer = document.querySelector('.messages-container');
         this.chatWelcome = document.querySelector('.chat-welcome');
-        this.historyItems = document.querySelectorAll('.history-item');
+        this.historyList = document.getElementById('historyList');
         this.hamburgerBtn = document.getElementById('hamburgerBtn');
         this.sidebarOverlay = document.getElementById('sidebarOverlay');
+        this.queryHistory = [];
+        this.maxHistoryItems = 5;
         this.init();
     }
 
     init() {
         this.attachEventListeners();
         this.focusInput();
+        this.loadHistory();
     }
 
     attachEventListeners() {
@@ -30,15 +33,6 @@ class ViamaticaChat {
                 e.preventDefault();
                 this.sendMessage();
             }
-        });
-
-        // Historial rápido
-        this.historyItems.forEach((item) => {
-            item.addEventListener('click', () => {
-                const specialty = item.querySelector('span').textContent;
-                this.chatInput.value = `Quisiera consultarme sobre ${specialty.toLowerCase()}`;
-                this.sendMessage();
-            });
         });
 
         // Hamburger menu
@@ -89,6 +83,59 @@ class ViamaticaChat {
         }
     }
 
+    loadHistory() {
+        // Cargar historial desde localStorage
+        const saved = localStorage.getItem('viamatica_history');
+        if (saved) {
+            try {
+                this.queryHistory = JSON.parse(saved);
+                this.renderHistory();
+            } catch (e) {
+                console.log('No se pudo cargar historial');
+            }
+        }
+    }
+
+    saveHistory() {
+        localStorage.setItem('viamatica_history', JSON.stringify(this.queryHistory));
+    }
+
+    addToHistory(query) {
+        // Agregar consulta al historial (máximo 5)
+        if (this.queryHistory.length >= this.maxHistoryItems) {
+            this.queryHistory.pop();
+        }
+        this.queryHistory.unshift(query);
+        this.saveHistory();
+        this.renderHistory();
+    }
+
+    renderHistory() {
+        if (this.queryHistory.length === 0) {
+            this.historyList.innerHTML = '<p style="color: var(--color-text-light); font-size: 13px; text-align: center; padding: 16px 0;">Sin consultas aún</p>';
+            return;
+        }
+
+        this.historyList.innerHTML = this.queryHistory
+            .map((query, index) => `
+                <button class="history-item" title="${query}">
+                    <i class="fas fa-history"></i>
+                    <span>${query.substring(0, 30)}${query.length > 30 ? '...' : ''}</span>
+                    <small>${index === 0 ? 'Ahora' : 'Hace poco'}</small>
+                </button>
+            `)
+            .join('');
+
+        // Agregar event listeners a los items del historial
+        this.historyList.querySelectorAll('.history-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                const query = item.title;
+                this.chatInput.value = query;
+                this.sendMessage();
+            });
+        });
+    }
+
     sendMessage() {
         const message = this.chatInput.value.trim();
 
@@ -101,6 +148,9 @@ class ViamaticaChat {
 
         // Agregar mensaje del usuario
         this.addMessage(message, 'user');
+
+        // Agregar a historial
+        this.addToHistory(message);
 
         // Limpiar input
         this.chatInput.value = '';
@@ -161,6 +211,7 @@ class ViamaticaChat {
         messageDiv.className = `message ${sender}-message`;
 
         if (sender === 'bot') {
+            // Permitir HTML para las respuestas del bot (respuestas estructuradas)
             messageDiv.innerHTML = `
                 <div class="message-avatar">
                     <i class="fas fa-robot"></i>
@@ -171,6 +222,7 @@ class ViamaticaChat {
                 </div>
             `;
         } else {
+            // Escapar HTML para mensajes del usuario (seguridad)
             messageDiv.innerHTML = `
                 <div class="message-content">
                     <p>${this.escapeHtml(text)}</p>
