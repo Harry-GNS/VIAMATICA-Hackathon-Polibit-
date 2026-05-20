@@ -5,13 +5,14 @@ python-dotenv==1.0.0
 
 # IA & LLM
 groq==0.4.2
+httpx==0.23.3
 
 # Database
 # sqlite3 comes built-in with Python
 
 # Utilidades
 requests==2.31.0
-pydantic==2.5.0
+pydantic==2.13.4
 
 # Producción (solo si haces deploy)
 gunicorn==21.2.0

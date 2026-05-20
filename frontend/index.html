@@ -13,7 +13,7 @@
         <header class="navbar">
             <div class="navbar-content">
                         <div class="navbar-left">
-                            <button id="hamburgerBtn" class="btn-icon" aria-label="Abrir menú" onclick="toggleSidebar()">
+                            <button id="hamburgerBtn" class="btn-icon" aria-label="Abrir menú">
                                 <i class="fas fa-bars"></i>
                             </button>
                             <div class="logo">
@@ -166,7 +166,7 @@
                             placeholder="Describe tus síntomas o haz una pregunta..."
                             autocomplete="off"
                         >
-                            <button class="btn-send" title="Enviar" onclick="uiSendMessage()">
+                            <button class="btn-send" title="Enviar">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                     </div>
@@ -234,86 +234,7 @@
                 </div>
             </aside>
         </main>
-            <script>
-                function toggleSidebar() {
-                    const body = document.body;
-                    const overlay = document.getElementById('sidebarOverlay');
-                    const hamburger = document.getElementById('hamburgerBtn');
-                    const isCollapsed = body.classList.toggle('sidebar-collapsed');
-                    if (window.innerWidth <= 992) {
-                        if (isCollapsed) {
-                            body.classList.remove('sidebar-open');
-                            if (overlay) overlay.setAttribute('aria-hidden', 'true');
-                        } else {
-                            body.classList.add('sidebar-open');
-                            if (overlay) overlay.setAttribute('aria-hidden', 'false');
-                        }
-                    } else {
-                        body.classList.remove('sidebar-open');
-                        if (overlay) overlay.setAttribute('aria-hidden', 'true');
-                    }
-                    if (hamburger && hamburger.querySelector('i')) {
-                        const icon = hamburger.querySelector('i');
-                        icon.classList.toggle('fa-times', !isCollapsed);
-                        icon.classList.toggle('fa-bars', isCollapsed);
-                    }
-                }
-        
-                // Fallback send function in case class listeners are not attached
-                async function uiSendMessage() {
-                    const input = document.querySelector('.chat-input');
-                    const chatContainer = document.querySelector('.messages-container');
-                    const sendBtn = document.querySelector('.btn-send');
-                    if (!input || !chatContainer) return;
-                    const message = input.value.trim();
-                    if (!message) return;
-
-                    // Mostrar mensaje de usuario
-                    const userDiv = document.createElement('div');
-                    userDiv.className = 'message user-message';
-                    userDiv.innerHTML = `<div class="message-content"><p>${escapeHtml(message)}</p><small>ahora</small></div>`;
-                    chatContainer.appendChild(userDiv);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                    input.value = '';
-                    if (sendBtn) sendBtn.disabled = true;
-
-                    // Loading
-                    const loadingDiv = document.createElement('div');
-                    loadingDiv.className = 'message bot-message';
-                    loadingDiv.innerHTML = `<div class="message-avatar"><i class="fas fa-robot"></i></div><div class="message-content"><div class="loading"><span></span><span></span><span></span></div></div>`;
-                    chatContainer.appendChild(loadingDiv);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-
-                    try {
-                        const res = await fetch('/api/chat', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ message })
-                        });
-                        loadingDiv.remove();
-                        if (!res.ok) throw new Error('Network error ' + res.status);
-                        const data = await res.json();
-                        const botDiv = document.createElement('div');
-                        botDiv.className = 'message bot-message';
-                        botDiv.innerHTML = `<div class="message-avatar"><i class="fas fa-robot"></i></div><div class="message-content"><div class="bot-response">${escapeHtml(data.message || data.response || JSON.stringify(data))}</div><small>ahora</small></div>`;
-                        chatContainer.appendChild(botDiv);
-                        chatContainer.scrollTop = chatContainer.scrollHeight;
-                    } catch (err) {
-                        loadingDiv.remove();
-                        const errDiv = document.createElement('div');
-                        errDiv.className = 'error';
-                        errDiv.textContent = 'Error enviando mensaje: ' + err.message;
-                        chatContainer.appendChild(errDiv);
-                    } finally {
-                        if (sendBtn) sendBtn.disabled = false;
-                        input.focus();
-                    }
-                }
-
-                function escapeHtml(text) {
-                    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-                }
-            </script>
+        <script src="script.js"></script>
     </div>
 
 

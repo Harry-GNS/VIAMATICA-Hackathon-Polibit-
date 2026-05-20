@@ -90,8 +90,16 @@ class DatabaseManager:
         """)
         
         conn.commit()
-        conn.close()
-        print("✅ Base de datos inicializada")
+        
+        # Cargar datos de ejemplo automáticamente si está vacía
+        cursor.execute("SELECT COUNT(*) FROM hospitales")
+        if cursor.fetchone()[0] == 0:
+            print("[INFO] Base de datos vacía. Cargando datos de ejemplo...")
+            conn.close()
+            self.load_sample_data()
+        else:
+            conn.close()
+        print("[OK] Base de datos inicializada")
     
     # ========== HOSPITALES ==========
     def get_hospitales(self) -> List[Dict]:
@@ -263,7 +271,22 @@ class DatabaseManager:
         for cob in coberturas:
             self.add_cobertura(*cob)
         
-        print("✅ Datos de ejemplo cargados")
+        print("[OK] Datos de ejemplo cargados")
+    
+    def get_coberturas_detalle(self) -> List[Dict]:
+        """Obtener detalle de coberturas de especialidades por plan"""
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT p.nombre as plan_nombre, e.nombre as especialidad_nombre, 
+                   c.cubre_porcentaje, c.copago_especialidad
+            FROM cobertura_especialidad c
+            JOIN planes_seguro p ON c.plan_id = p.id
+            JOIN especialidades e ON c.especialidad_id = e.id
+        """)
+        coberturas = [dict(row) for row in cursor.fetchall()]
+        conn.close()
+        return coberturas
     
     def clear_all(self):
         """Limpiar todas las tablas"""

@@ -198,6 +198,7 @@ class ViamaticaChat {
         div.textContent = text;
         return div.innerHTML;
     }
+}
 
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
