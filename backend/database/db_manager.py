@@ -213,7 +213,7 @@ class DatabaseManager:
         cursor = conn.cursor()
         cursor.execute("""
             INSERT OR REPLACE INTO cobertura_especialidad 
-            (id, plan_id, especialidad_id, cubre_porcentaje, copago_especialidad)
+            (plan_id, especialidad_id, cubre_porcentaje, copago_especialidad)
             VALUES (?, ?, ?, ?)
         """, (plan_id, especialidad_id, cubre_porcentaje, copago_especialidad))
         conn.commit()
@@ -304,5 +304,3 @@ class DatabaseManager:
         cursor.execute("DELETE FROM hospitales")
         conn.commit()
         conn.close()
-
-```
